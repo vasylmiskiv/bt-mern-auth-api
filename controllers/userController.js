@@ -49,8 +49,6 @@ const registerUser = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error("Invalid user data");
   }
-
-  res.status(200).json({ message: "Register user" });
 });
 
 const logoutUser = asyncHandler(async (req, res) => {
@@ -63,13 +61,18 @@ const logoutUser = asyncHandler(async (req, res) => {
 });
 
 const getUserProfile = asyncHandler(async (req, res) => {
-  const user = {
-    _id: req.user._id,
-    name: req.user.name,
-    email: req.user.email,
-  };
+  const user = await User.findById(req.user._id);
 
-  res.status(200).json(user);
+  if (user) {
+    res.status(200).json({
+      _id: req.user._id,
+      name: req.user.name,
+      email: req.user.email,
+    });
+  } else {
+    res.status(404);
+    throw new Error("User not found");
+  }
 });
 
 const updateUserProfile = asyncHandler(async (req, res) => {
