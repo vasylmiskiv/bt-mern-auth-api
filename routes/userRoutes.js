@@ -1,20 +1,24 @@
 import express from "express";
-import {
-  authUser,
-  registerUser,
-  logoutUser,
-  getUserProfile,
-  updateUserProfile,
-} from "../controllers/userController.js";
+
+import UserRepository from "../repository/userRepository.js";
+import UserService from "../services/userService.js";
+import UserController from "../controllers/userController.js";
+
 import { protect } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-router.post("/", registerUser);
-router.post("/auth", authUser);
-router.post("/logout", logoutUser);
+const userRepository = new UserRepository();
+const userService = new UserService(userRepository);
+const userController = new UserController(userService);
 
-router.get("/profile", protect, getUserProfile);
-router.patch("/profile", protect, updateUserProfile);
+router.post("/", userController.registerUser);
+router.post("/auth", userController.authUser);
+router.post("/logout", userController.logoutUser);
+
+router
+  .route("/profile")
+  .get(protect, userController.getUserProfile)
+  .patch(protect, userController.updateUserProfile);
 
 export default router;

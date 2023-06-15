@@ -1,12 +1,7 @@
-import express from "express";
 import jwt from "jsonwebtoken";
 import asyncHandler from "express-async-handler";
-import cookieParser from "cookie-parser";
 
-import User from "../models/userModels.js";
-
-const app = express();
-app.use(cookieParser());
+import User from "../models/userModel.js";
 
 const protect = asyncHandler(async (req, res, next) => {
   let token;
