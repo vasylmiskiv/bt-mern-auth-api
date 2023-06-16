@@ -1,6 +1,10 @@
 import asyncHandler from "express-async-handler";
 import generateToken from "../utils/generateToken.js";
 
+import { RegisterUserDto } from "../dto/RegisterUser.dto.js";
+import { AuthUserDto } from "../dto/AuthUser.dto.js";
+import { UpdateUserDto } from "../dto/UpdateUser.dto.js";
+
 class UserController {
   constructor(userService) {
     this.userService = userService;
@@ -9,9 +13,11 @@ class UserController {
   authUser = asyncHandler(async (req, res) => {
     const { email, password } = req.body;
 
-    const user = await this.userService.findUserByEmail(email);
+    const authUserDto = new AuthUserDto(email, password);
 
-    if (user && (await user.matchPassword(password))) {
+    const user = await this.userService.authUser(authUserDto);
+
+    if (user) {
       generateToken(res, user._id);
 
       res.status(200).json({
@@ -28,6 +34,8 @@ class UserController {
   registerUser = asyncHandler(async (req, res) => {
     const { name, email, password } = req.body;
 
+    const registerUserDto = new RegisterUserDto(name, email, password);
+
     const userExists = await this.userService.findUserByEmail(email);
 
     if (userExists) {
@@ -35,7 +43,7 @@ class UserController {
       throw new Error("User already exists");
     }
 
-    const user = await this.userService.createUser(name, email, password);
+    const user = await this.userService.createUser(registerUserDto);
 
     if (user) {
       generateToken(res, user._id);
@@ -76,10 +84,17 @@ class UserController {
   });
 
   updateUserProfile = asyncHandler(async (req, res) => {
+    const { name, email, password } = req.body;
+
+    const updateUserDto = new UpdateUserDto(name, email, password);
+
     const user = await this.userService.findUserById(req.user._id);
 
     if (user) {
-      const updatedUser = await this.userService.updateUser(user, req.body);
+      const updatedUser = await this.userService.updateUser(
+        user,
+        updateUserDto
+      );
 
       res.status(200).json({
         _id: updatedUser._id,
