@@ -1,10 +1,14 @@
 import express from "express";
 import dotenv from "dotenv";
-import userRoutes from "./routes/userRoutes.js";
-import connectDB from "./config/db.js";
+import { engine } from "express-handlebars";
 import cookieParser from "cookie-parser";
-import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
 import cors from "cors";
+
+import connectDB from "./config/db.js";
+
+import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
+
+import userRoutes from "./routes/userRoutes.js";
 
 dotenv.config();
 
@@ -14,7 +18,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: ["http://localhost:5173", "https://vmiskivauthmern.vercel.app"],
     methods: ["GET", "POST", "PUT", "PATCH"],
     credentials: true,
   })
@@ -28,7 +32,13 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/users", userRoutes);
 
-app.get("/", (req, res) => res.send("Server is ready"));
+app.engine("handlebars", engine({ defaultLayout: false }));
+app.set("view engine", "handlebars");
+app.set("views", "./views");
+
+app.get("/", (req, res) => {
+  res.render("index");
+});
 
 // custom middleware handlers
 app.use(notFound);
