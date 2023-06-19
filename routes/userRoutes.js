@@ -18,7 +18,7 @@ router.post("/logout", userController.logoutUser);
 
 router
   .route("/profile")
-  .get(protect, userController.getUserProfile)
+  // .get(protect, userController.getUserProfile)
   .patch(protect, userController.updateUserProfile);
 
 export default router;

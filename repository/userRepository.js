@@ -1,23 +1,18 @@
 import User from "../models/userModel.js";
 
 class UserRepository {
-  findUserByEmail = async (email) => {
-    return await User.findOne({ email });
-  };
+  findUserByEmail = (email) => User.findOne({ email });
 
-  createUser = async (name, email, password) => {
-    return await User.create({
+  createUser = (name, email, password) =>
+    User.create({
       name,
       email,
       password,
     });
-  };
 
-  findUserById = async (userId) => {
-    return await User.findById(userId).select("-password");
-  };
+  findUserById = (userId) => User.findById(userId).select("-password");
 
-  updateUser = async (user, updates) => {
+  updateUser = (user, updates) => {
     user.name = updates.name || user.name;
     user.email = updates.email || user.email;
 
@@ -25,7 +20,7 @@ class UserRepository {
       user.password = updates.password;
     }
 
-    return await user.save();
+    return user.save();
   };
 }
 

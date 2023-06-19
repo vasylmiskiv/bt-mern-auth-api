@@ -1,8 +1,8 @@
 import asyncHandler from "express-async-handler";
 import generateToken from "../utils/generateToken.js";
 
-import { RegisterUserDto } from "../dto/RegisterUser.dto.js";
 import { AuthUserDto } from "../dto/AuthUser.dto.js";
+import { RegisterUserDto } from "../dto/RegisterUser.dto.js";
 import { UpdateUserDto } from "../dto/UpdateUser.dto.js";
 
 class UserController {
@@ -68,27 +68,27 @@ class UserController {
     res.status(200).json({ message: "User logged out" });
   });
 
-  getUserProfile = asyncHandler(async (req, res) => {
-    const user = await this.userService.findUserById(req.user._id);
+  // getUserProfile = asyncHandler(async (req, res) => {
+  //   const user = await this.userService.findUserById(req.user._id);
 
-    if (user) {
-      res.status(200).json({
-        _id: req.user._id,
-        name: req.user.name,
-        email: req.user.email,
-      });
-    } else {
-      res.status(404);
-      throw new Error("User not found");
-    }
-  });
+  //   if (user) {
+  //     res.status(200).json({
+  //       _id: req.user._id,
+  //       name: req.user.name,
+  //       email: req.user.email,
+  //     });
+  //   } else {
+  //     res.status(404);
+  //     throw new Error("User not found");
+  //   }
+  // });
 
   updateUserProfile = asyncHandler(async (req, res) => {
     const { name, email, password } = req.body;
 
     const updateUserDto = new UpdateUserDto(name, email, password);
 
-    const user = await this.userService.findUserById(req.user._id);
+    const user = await this.userService.findUserById(req.body._id);
 
     if (user) {
       const updatedUser = await this.userService.updateUser(

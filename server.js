@@ -36,7 +36,7 @@ app.engine("handlebars", engine({ defaultLayout: false }));
 app.set("view engine", "handlebars");
 app.set("views", "./views");
 
-app.get("/", (req, res) => {
+app.get("/api", (req, res) => {
   res.render("index");
 });
 
